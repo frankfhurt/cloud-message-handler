@@ -1,0 +1,26 @@
+service: cloud-message-handler
+
+plugins:
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-2
+  memorySize: 256
+  timeout: 30
+  default_stage: dev
+  environment: ${file(env.yml):${opt:stage, self:provider.default_stage}}
+
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sns:*
+      Resource: "*"
+  
+functions:
+  parking-status:
+    handler: lambdas/parking-status.handler
+    events:
+      - sns: notification

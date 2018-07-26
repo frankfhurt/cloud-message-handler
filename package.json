@@ -1,0 +1,25 @@
+{
+  "name": "cloud-message-handler",
+  "version": "1.0.0",
+  "description": "Serverless project to handler messages from aws iot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Franklyn Vieira frankfhurt@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@types/nconf": "0.0.37",
+    "aws-sdk": "^2.224.1",
+    "mongodb": "^3.1.1",
+    "mongoose": "^5.2.3",
+    "nconf": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^0.0.21",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/mongodb": "^3.1.1",
+    "@types/mongoose": "^5.2.0",
+    "serverless-plugin-typescript": "^1.1.3"
+  }
+}

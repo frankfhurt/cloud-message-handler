@@ -20,7 +20,16 @@ provider:
       Resource: "*"
   
 functions:
-  parking-status:
-    handler: lambdas/parking-status.handler
+  parking-status-updater:
+    handler: lambdas/parking-status-updater.handler
+    environment:
+      MONGODB_ATLAS_CLUSTER_URI: 
     events:
-      - sns: notification
+      - iot:
+          sql: "SELECT * FROM 'updateParkingStatus'"
+
+  parking-status-notifier:
+    handler: lambdas/parking-status-notifier.handler
+    events:
+      - iot:
+          sql: "SELECT * FROM 'updateParkingStatus'"

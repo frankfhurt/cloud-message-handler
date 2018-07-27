@@ -9,6 +9,7 @@ export class ParkingStatusUpdater {
 
     public async update(parkingStatus): Promise<any> {
         return new Promise<any>((resolve, reject) => {
+            console.log("Passou pelo update");
             resolve();
         });
     }

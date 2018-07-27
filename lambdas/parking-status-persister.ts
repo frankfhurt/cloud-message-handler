@@ -7,52 +7,64 @@ import { ParkingStatusPersister } from '../services/parking-status-persister';
 const TAG: string = `lambda -`
 
 let atlas_connection_uri: string;
-let cachedDb: Db = null;
+let cachedDb: Db;
 let updateterService: ParkingStatusPersister;
 
 export const handler: Handler = (event: any, context: Context, callback: Callback) => {
 
     console.log(`${TAG} Event: ${JSON.stringify(event)}`);
 
-    const uri = process.env['MONGODB_ATLAS_CLUSTER_URI'];
+    const uri: string = process.env['MONGODB_ATLAS_CLUSTER_URI'];
 
     updateterService = new ParkingStatusPersister();
 
     if (atlas_connection_uri != null) {
         processEvent(event, context, callback).then((result) => {
-            console.log(`${TAG} Parking status saved`);
-            this.callback(null, `${TAG} SUCCESS`);
+            console.log(`${TAG} Successfully inserted`);
+            callback(null, { message: "Sucess" });
         }).catch(err => {
-            console.log(`${TAG} Send Notification ERROR: ${err}`);
+            console.log(`${TAG} Insertion ERROR: ${err}`);
+            callback(null, { message: "ERROR" });
         });
     } else {
         atlas_connection_uri = uri;
         console.log(`${TAG} the Atlas connection string is ${atlas_connection_uri}`);
+
         processEvent(event, context, callback).then((result) => {
             console.log(`${TAG} Successfully inserted`);
-            this.callback(null, "SUCCESS");
+            callback(null, { message: "Sucess" });
         }).catch(err => {
             console.log(`${TAG} Insertion ERROR: ${err}`);
+            callback(null, { message: "ERROR" });
         });
     }
 }
 
 function processEvent(event: any, context: Context, callback: Callback): Promise<any> {
 
+    let parkingStatus = JSON.parse(JSON.stringify(event));
+
     context.callbackWaitsForEmptyEventLoop = false;
 
-    try {
-        if (cachedDb == null) {
-            console.log(`${TAG} => connecting to database`);
-            MongoClient.connect(atlas_connection_uri, (err, client) => {
-                cachedDb = client.db('admin');
-                return updateterService.save(event, cachedDb)
-            });
+    return new Promise<any>((resolve, reject) => {
+        try {
+            if (cachedDb == null) {
+                console.log(`${TAG} connecting to database....`);
+                MongoClient.connect(atlas_connection_uri, (err, client) => {
+
+                    if (err) throw err;
+
+                    console.log(`${TAG} => connected to database!`);
+                    cachedDb = client.db('parkingdb');
+                    resolve(updateterService.save(parkingStatus, cachedDb));
+                });
+            } else {
+                console.log(`${TAG} already connected to database!`);
+                resolve(updateterService.save(parkingStatus, cachedDb));
+            }
+        } catch (err) {
+            console.error(`${TAG} an error occurred`, err);
+            reject(err);
         }
-        else {
-            return updateterService.save(event, cachedDb)
-        }
-    } catch (err) {
-        console.error(`${TAG} an error occurred`, err);
-    }
+    });
 }

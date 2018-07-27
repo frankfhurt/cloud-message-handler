@@ -12,7 +12,13 @@ export class ParkingStatusPersister {
 
     public async save(parkingStatus: any, db: Db): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            db.collection('parkingStatus').insertOne(parkingStatus, (err, result) => {
+
+            // Fetch a collection
+            let collection = db.collection('parkingStatus');
+
+            console.log("Will perform the insertion...")
+
+            collection.insertOne(parkingStatus, (err, result) => {
                 if (err != null) {
                     console.error(`${TAG} an error occurred in save`, err);
                     reject(err);

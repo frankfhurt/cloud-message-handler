@@ -1,16 +1,26 @@
-import { resolve } from "path";
-
 'use strict';
 
-export class ParkingStatusUpdater {
+import { Db } from 'mongodb';
+import { resolve } from "path";
+
+const TAG: string = `parking service -`
+
+export class ParkingStatusPersister {
 
     constructor() {
     }
 
-    public async update(parkingStatus): Promise<any> {
+    public async save(parkingStatus: any, db: Db): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            console.log("Passou pelo update");
-            resolve();
+            db.collection('parkingStatus').insertOne(parkingStatus, (err, result) => {
+                if (err != null) {
+                    console.error(`${TAG} an error occurred in save`, err);
+                    reject(err);
+                } else {
+                    console.log(`${TAG} parkings status inserted! id: ${result.insertedId}`);
+                    resolve(result);
+                }
+            });
         });
     }
 }

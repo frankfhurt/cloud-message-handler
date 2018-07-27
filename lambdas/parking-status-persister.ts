@@ -2,7 +2,7 @@
 
 import { Handler, Context, Callback } from 'aws-lambda';
 import { MongoClient, Db } from 'mongodb';
-import { ParkingStatusPersister } from '../services/parking-status-updater';
+import { ParkingStatusPersister } from '../services/parking-status-persister';
 
 const TAG: string = `lambda -`
 

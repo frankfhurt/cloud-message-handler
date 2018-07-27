@@ -10,7 +10,7 @@ provider:
   memorySize: 256
   timeout: 30
   default_stage: dev
-  environment: ${file(env.yml):${opt:stage, self:provider.default_stage}}
+#  environment: ${file(env.yml):${opt:stage, self:provider.default_stage}}
 
   versionFunctions: false
   iamRoleStatements:
@@ -20,8 +20,8 @@ provider:
       Resource: "*"
   
 functions:
-  parking-status-updater:
-    handler: lambdas/parking-status-updater.handler
+  parking-status-persister:
+    handler: lambdas/parking-status-persister.handler
     environment:
       MONGODB_ATLAS_CLUSTER_URI: 
     events:

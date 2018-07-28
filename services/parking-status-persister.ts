@@ -49,16 +49,6 @@ export class ParkingStatusPersister {
                     }
                 }
             });
-
-            // collection.insertOne(parkingStatus, (err, result) => {
-            //     if (err != null) {
-            //         console.error(`${TAG} an error occurred in save`, err);
-            //         reject(err);
-            //     } else {
-            //         console.log(`${TAG} parkings status inserted! id: ${result.insertedId}`);
-            //         resolve(result);
-            //     }
-            // });
         });
     }
 }

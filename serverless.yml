@@ -23,8 +23,7 @@ functions:
   parking-status-persister:
     handler: lambdas/parking-status-persister.handler
     environment:
-      MONGODB_ATLAS_CLUSTER_URI: 
-#      MONGODB_ATLAS_CLUSTER_URI: mongodb+srv://lambda:c0qOavH9whoVxX1Q@smart-parking-cluster-xilps.mongodb.net/parkingdb?retryWrites=true
+      MONGODB_ATLAS_CLUSTER_URI: <Connection URL HERE>
     events:
       - iot:
           sql: "SELECT * FROM 'updateParkingStatus'"

@@ -23,7 +23,7 @@ functions:
   parking-status-persister:
     handler: lambdas/parking-status-persister.handler
     environment:
-      MONGODB_ATLAS_CLUSTER_URI: <Connection URL HERE>
+      MONGODB_ATLAS_CLUSTER_URI: 
     events:
       - iot:
           sql: "SELECT * FROM 'updateParkingStatus'"
@@ -33,3 +33,17 @@ functions:
     events:
       - iot:
           sql: "SELECT * FROM 'updateParkingStatus'"
+
+  parking-status:
+    handler: lambdas/parking-status.handler
+    environment:
+      MONGODB_ATLAS_CLUSTER_URI: 
+    events:
+      - http: 
+          path: parking/{id}
+          method: get 
+          private: true
+          request: 
+            parameters: 
+              paths: 
+                id: true

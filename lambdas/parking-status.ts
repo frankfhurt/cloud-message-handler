@@ -10,10 +10,10 @@ import {
     Db
 } from 'mongodb';
 import {
-    ParkingStatusRepository 
+    ParkingStatusRepository
 } from '../services/parking-status-persister';
 
-const TAG: string = `parking status persister -`
+const TAG: string = `parking status -`
 
 let atlas_connection_uri: string;
 let cachedDb: Db;
@@ -29,14 +29,15 @@ export const handler: Handler = (event: any, context: Context, callback: Callbac
 
     if (atlas_connection_uri != null) {
         processEvent(event, context, callback).then((result) => {
-            console.log(`${TAG} Successfully inserted`);
-            callback(null, {
-                message: "Sucess"
-            });
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(result)
+            };
+            callback(null, response);
         }).catch(err => {
-            console.log(`${TAG} Insertion ERROR: ${err}`);
             callback(null, {
-                message: "ERROR"
+                statusCode: 404,
+                body: "Not Found"
             });
         });
     } else {
@@ -44,26 +45,27 @@ export const handler: Handler = (event: any, context: Context, callback: Callbac
         console.log(`${TAG} the Atlas connection string is ${atlas_connection_uri}`);
 
         processEvent(event, context, callback).then((result) => {
-            console.log(`${TAG} Successfully inserted`);
-            callback(null, {
-                message: "Sucess"
-            });
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(result)
+            };
+            callback(null, response);
         }).catch(err => {
-            console.log(`${TAG} Insertion ERROR: ${err}`);
             callback(null, {
-                message: "ERROR"
+                statusCode: 404,
+                body: "Not Found"
             });
         });
     }
 }
 
-function processEvent(event: any, context: Context, callback: Callback): Promise < any > {
+function processEvent(event: any, context: Context, callback: Callback): Promise<any> {
 
-    let parkingStatus = JSON.parse(JSON.stringify(event));
+    let parkingId = event.pathParameters.id;
 
     context.callbackWaitsForEmptyEventLoop = false;
 
-    return new Promise < any > ((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
         try {
             if (cachedDb == null) {
                 console.log(`${TAG} connecting to database....`);
@@ -73,11 +75,11 @@ function processEvent(event: any, context: Context, callback: Callback): Promise
 
                     console.log(`${TAG} => connected to database!`);
                     cachedDb = client.db('parkingdb');
-                    resolve(repositoryService.save(parkingStatus, cachedDb));
+                    resolve(repositoryService.status(parkingId, cachedDb));
                 });
             } else {
                 console.log(`${TAG} already connected to database!`);
-                resolve(repositoryService.save(parkingStatus, cachedDb));
+                resolve(repositoryService.status(parkingId, cachedDb));
             }
         } catch (err) {
             console.error(`${TAG} an error occurred`, err);

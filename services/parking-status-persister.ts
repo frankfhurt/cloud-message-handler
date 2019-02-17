@@ -3,9 +3,9 @@
 import { Db } from 'mongodb';
 import { resolve } from "path";
 
-const TAG: string = `parking service -`
+const TAG: string = `parking status repository -`
 
-export class ParkingStatusPersister {
+export class ParkingStatusRepository {
 
     constructor() {
     }
@@ -46,6 +46,38 @@ export class ParkingStatusPersister {
                                 resolve(insertResult);
                             }
                         });
+                    }
+                }
+            });
+        });
+    }
+
+    public async status(parkingId: any, db: Db): Promise<any> {
+
+        return new Promise<any>((resolve, reject) => {
+
+            let collection = db.collection('parkingStatus');
+
+            console.log("Will search by parkingId.")
+
+            const myquery = { parkingId: parkingId };
+
+            collection.findOne(myquery, (err, result) => {
+                if (err != null) {
+                    console.error(`${TAG} an error occurred in FindOne`, err);
+                    reject(err);
+                } else {
+                    console.log(`Result: ${result}`)
+                    console.log(`Result Stringfy: ${JSON.stringify(result)}`)
+                    if (result) {
+                        console.log(`${TAG} parkings status found for parking: ${parkingId}`);
+
+                        delete result._id;
+
+                        resolve(result)
+                    } else {
+                        console.log(`${TAG} parkings status NOT found for parking: ${parkingId}`);
+                        reject(err)
                     }
                 }
             });

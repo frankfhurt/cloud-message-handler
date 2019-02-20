@@ -15,11 +15,12 @@ export const handler: Handler = (event: any, context: Context, callback: Callbac
 
     console.log(`Event: ${JSON.stringify(event)}`);
 
-    const uri = process.env['MONGODB_ATLAS_CLUSTER_URI'];
+    const fcmUrl = process.env['FCM_URL'];
+    const authKey = process.env['AUTHORIZATION_KEY'];
 
     notificationService = new ParkingStatusNotifier();
 
-    notificationService.notify(event).then(value => {
+    notificationService.notify(fcmUrl, authKey, event).then(value => {
         console.log(`Send Notification Sucess: ${value}`);
     }).catch(err => {
         console.log(`Send Notification ERROR: ${err}`);

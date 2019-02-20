@@ -10,10 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "@types/nconf": "0.0.37",
+    "@types/request": "^2.48.1",
     "aws-sdk": "^2.224.1",
+    "https": "^1.0.0",
     "mongodb": "^3.1.1",
     "mongoose": "^5.2.3",
-    "nconf": "^0.10.0"
+    "nconf": "^0.10.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^0.0.21",

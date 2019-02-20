@@ -1,33 +1,41 @@
 'use strict';
 
-import { SNS } from 'aws-sdk';
+import request = require("request");
 
 export class ParkingStatusNotifier {
 
     constructor() {
     }
 
-    public async notify(notification): Promise<any> {
+    public async notify(url, authKey, body): Promise<any> {
 
         return new Promise<any>((resolve, reject) => {
             console.log("Passou pelo Notificador");
 
-            const sns = new SNS({
-                region: 'us-east-2'
+            const body = {
+                to: "/topics/parking",
+                data: {
+                    message: "Update Parking Status"
+                }
+            }
+
+            request({
+                url: url,
+                method: 'POST',
+                headers: {
+                    'Authorization': authKey,
+                    'Content-Type': 'application/json'
+                },
+                body: body,
+                json: true
+            }, (err, res, body) => {
+                if (err) {
+                    reject(err)
+                }
+
+                resolve(`Message Sent!!! ${JSON.stringify(body)}`);
+
             });
-
-            // sns.publish({
-            //     Message: snsMessage,
-            //     PhoneNumber: cellphoneNumber
-            // }, (err, snsResponse) => {
-
-            //     if (err) {
-            //         console.log(`failure to send SMS ${err.message} - ${err.stack}`);
-            //     }
-
-            //     resolve();
-            // });
-            resolve("Message Sent!!!");
         });
     }
 }
